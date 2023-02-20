@@ -3,15 +3,19 @@ package com.example.sendmessageskotlin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.example.sendmessageskotlin.common.CallBackHandler
+import com.example.sendmessageskotlin.common.Data
+import com.example.sendmessageskotlin.common.StartActivityCallBack
 import com.example.sendmessageskotlin.entity.UserEntity
 import com.example.sendmessageskotlin.model.RegistrationModel
 
-class RegistrationPresenter constructor(context: Context) {
+class RegistrationPresenter
+constructor(context: Context, startActivityCallBack: StartActivityCallBack) {
 
     private val context: Context
     private var isRegistration: Boolean = false
-    private lateinit var userPassword: String
+    private var isSaveUser: Boolean = false
     private lateinit var userEntity: UserEntity
+    private val startActivityCallBack: StartActivityCallBack
     private val registrationModel: RegistrationModel = RegistrationModel()
     private val getEntityCallBack = object : CallBackHandler<UserEntity> {
         override fun execute(value: UserEntity) {
@@ -21,11 +25,18 @@ class RegistrationPresenter constructor(context: Context) {
 
     init {
         this.context = context
+        this.startActivityCallBack = startActivityCallBack
     }
 
     fun setIsRegistration(isRegistration: Boolean):
             RegistrationPresenter {
         this.isRegistration = isRegistration
+        return this
+    }
+
+    fun setIsSaveUser(isSaveUser: Boolean):
+            RegistrationPresenter {
+        this.isSaveUser = isSaveUser
         return this
     }
 
@@ -35,21 +46,19 @@ class RegistrationPresenter constructor(context: Context) {
         return this
     }
 
-    fun setUserPassword(userPassword: String):
-            RegistrationPresenter {
-        this.userPassword = userPassword
-        return this
-    }
-
-    fun signIn(userName: String) {
-        getEntityByName(getEntityCallBack, userName)
+    fun signIn() {
+        getEntityByName(
+            getEntityCallBack,
+            userEntity.getUsername()
+        )
     }
 
     private fun getEntityByName(
         callBack: CallBackHandler<UserEntity>,
         userName: String
     ) {
-        registrationModel.getEntityByName(callBack, userName)
+        registrationModel
+            .getEntityByName(callBack, userName)
     }
 
     private fun authorization(_userEntity: UserEntity) {
@@ -58,7 +67,7 @@ class RegistrationPresenter constructor(context: Context) {
         if (
             !isRegistration
             and userEntityExists
-            and (userPassword == _userEntity.getPassword())
+            and (userEntity.getPassword() == _userEntity.getPassword())
         ) {
             runStartActivity()
         }
@@ -68,7 +77,7 @@ class RegistrationPresenter constructor(context: Context) {
             !isRegistration
             and (
                     !userEntityExists
-                            or (userPassword != _userEntity.getPassword())
+                            or (userEntity.getPassword() != _userEntity.getPassword())
                     )
         ) {
             Toast.makeText(
@@ -99,10 +108,24 @@ class RegistrationPresenter constructor(context: Context) {
     }
 
     private fun runStartActivity() {
-        
+        if (isSaveUser) {
+            Data.putStringPreferences(
+                context,
+                Data.SAVE_USERNAME,
+                userEntity.getUsername()
+            )
+        }
+
+        Data.putStringPreferences(
+            context,
+            Data.USERNAME,
+            userEntity.getUsername()
+        )
+
+        startActivityCallBack.start()
     }
 
     private fun registrationUser() {
-
+        registrationModel.postEntity(userEntity)
     }
 }
