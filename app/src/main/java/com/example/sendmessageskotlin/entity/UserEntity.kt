@@ -1,5 +1,7 @@
 package com.example.sendmessageskotlin.entity
 
+import android.widget.Toast
+
 class UserEntity() {
 
     private var id: Int = 0
@@ -7,13 +9,19 @@ class UserEntity() {
     private lateinit var password: String
 
     constructor(
-        id: Int,
         username: String,
         password: String
     ) : this() {
-        this.id = id
         this.username = username
         this.password = password
+    }
+
+    constructor(
+        id: Int,
+        username: String,
+        password: String
+    ): this(username, password){
+        this.id = id
     }
 
     fun getUsername(): String = username
