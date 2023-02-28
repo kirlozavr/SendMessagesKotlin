@@ -12,7 +12,10 @@ class RegistrationModel {
 
     private var dataBase = Firebase.firestore
 
-    fun getEntityByName(callBack: CallBackHandler<UserEntity>, userName: String) {
+    fun getEntityByName(
+        callBack: CallBackHandler<UserEntity>,
+        userName: String
+    ) {
         dataBase
             .collection(DataBase.NAME_DB)
             .document(userName)
