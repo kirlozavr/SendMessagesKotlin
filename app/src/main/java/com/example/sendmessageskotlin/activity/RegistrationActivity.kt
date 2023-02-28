@@ -34,15 +34,11 @@ class RegistrationActivity : AppCompatActivity() {
     private fun init(){
 
         initView()
+        isConnected()
 
         startActivityCallBack = object: StartActivityCallBack{
             override fun start() {
-                val intent = Intent(
-                    this@RegistrationActivity,
-                    ChatsActivity::class.java
-                )
-                startActivity(intent)
-                finish()
+               runStartActivity()
             }
         }
 
@@ -50,7 +46,18 @@ class RegistrationActivity : AppCompatActivity() {
             this@RegistrationActivity,
             startActivityCallBack
         )
+    }
 
+    private fun runStartActivity(){
+        val intent = Intent(
+            this@RegistrationActivity,
+            ChatsActivity::class.java
+        )
+        startActivity(intent)
+        finish()
+    }
+
+    private fun isConnected(){
         val networkIsConnectedService: NetworkIsConnectedService =
             ViewModelProvider(this)[NetworkIsConnectedService::class.java]
         networkIsConnectedService.isConnected(
