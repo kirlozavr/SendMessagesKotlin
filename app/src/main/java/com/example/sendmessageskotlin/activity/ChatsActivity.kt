@@ -86,7 +86,7 @@ class ChatsActivity : AppCompatActivity() {
         initView()
         isConnected()
 
-        if (usernameFrom == null) {
+        if (usernameFrom.isEmpty()) {
             usernameFrom = Data
                 .getStringPreferences(this, Data.USERNAME)
         }
