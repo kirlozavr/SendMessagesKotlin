@@ -4,16 +4,17 @@ import com.example.sendmessageskotlin.common.CallBackHandler
 import com.example.sendmessageskotlin.common.DataBase
 import com.example.sendmessageskotlin.entity.ChatsEntity
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class ChatsModel {
 
-    private var database = Firebase.firestore
+    private val database = Firebase.firestore
 
     fun getAllChats(
-        callBackHandler: CallBackHandler<ChatsEntity>,
+        callBackHandler: CallBackHandler<List<ChatsEntity>>,
         usernameFrom: String
     ){
         database
@@ -22,10 +23,10 @@ class ChatsModel {
             .collection(DataBase.ListTag.COLLECTIONS_CHATS_TAG)
             .get()
             .addOnSuccessListener{ result ->
-                for(document in result) {
-                    val chatsEntity = document.toObject<ChatsEntity>()
-                    callBackHandler.execute(chatsEntity)
-                }
+                var chatsList = result
+                    .map { document -> document.toObject<ChatsEntity>() }
+                    .toList()
+                callBackHandler.execute(chatsList)
             }
     }
 }
