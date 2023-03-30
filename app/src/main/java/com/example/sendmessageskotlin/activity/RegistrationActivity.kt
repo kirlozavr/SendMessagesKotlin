@@ -2,6 +2,7 @@ package com.example.sendmessageskotlin.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +35,7 @@ class RegistrationActivity : AppCompatActivity() {
     private fun init(){
 
         initView()
+        onClick()
         isConnected()
 
         startActivityCallBack = object: StartActivityCallBack{
@@ -79,7 +81,18 @@ class RegistrationActivity : AppCompatActivity() {
         textViewRegistration.setText(R.string.textViewRegistration_false)
     }
 
-    fun onClickButtonRegistration() {
+    private fun onClick(){
+        buttonRegistration.setOnClickListener(View.OnClickListener {
+            onClickButtonRegistration()
+        })
+        textViewRegistration.setOnClickListener(View.OnClickListener {
+            onClickTextRegistration()
+        })
+        checkBox.setOnClickListener(View.OnClickListener {
+            onCheckBox()
+        })
+    }
+    private fun onClickButtonRegistration() {
         if (editTextName.text.toString().trim() == "") {
             Toast.makeText(
                 applicationContext,
@@ -105,7 +118,11 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    fun onClickTextRegistration() {
+    private fun onCheckBox(){
+        registrationPresenter.setIsSaveUser(checkBox.isChecked)
+    }
+
+    private fun onClickTextRegistration() {
         buttonStatus()
     }
 
