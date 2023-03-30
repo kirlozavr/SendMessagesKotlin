@@ -30,13 +30,13 @@ class RegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
         init()
+        onClick()
+        isConnected()
     }
 
     private fun init(){
 
         initView()
-        onClick()
-        isConnected()
 
         startActivityCallBack = object: StartActivityCallBack{
             override fun start() {
