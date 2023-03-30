@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sendmessageskotlin.R
 import com.example.sendmessageskotlin.adapters.RecyclerViewAdapterChats
+import com.example.sendmessageskotlin.adapters.RecyclerViewCallBack
 import com.example.sendmessageskotlin.common.Data
 import com.example.sendmessageskotlin.common.OnClickListener
 import com.example.sendmessageskotlin.dto.ChatsDto
-import com.example.sendmessageskotlin.mapping.ChatsMapper
+import com.example.sendmessageskotlin.presenter.ChatsPresenter
 import com.example.sendmessageskotlin.service.NetworkIsConnectedService
 
 class ChatsActivity : AppCompatActivity() {
@@ -23,15 +24,24 @@ class ChatsActivity : AppCompatActivity() {
     private val USERNAME_FROM = "usernameFromChats"
 
     private lateinit var toolbar: Toolbar
-    private lateinit var constrainLayout: ConstraintLayout
+    private lateinit var constraintLayout: ConstraintLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterChats: RecyclerViewAdapterChats
     private lateinit var usernameFrom: String
-    private val mapper: ChatsMapper = ChatsMapper()
+    private val chatsPresenter = ChatsPresenter()
+    private val getChatsCallBack = object : RecyclerViewCallBack<List<ChatsDto>> {
+        override fun get(value: List<ChatsDto>) {
+            adapterChats.deleteList()
+            adapterChats.setList(value.toMutableList())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chats)
         init()
+        isConnected()
+        chatsPresenter.showChats(usernameFrom, getChatsCallBack)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -84,12 +94,8 @@ class ChatsActivity : AppCompatActivity() {
     private fun init() {
 
         initView()
-        isConnected()
 
-        if (usernameFrom.isEmpty()) {
-            usernameFrom = Data
-                .getStringPreferences(this, Data.USERNAME)
-        }
+        usernameFrom = Data.getStringPreferences(this, Data.USERNAME)
 
         if (usernameFrom.isNotEmpty()) {
             supportActionBar?.title =
@@ -101,8 +107,9 @@ class ChatsActivity : AppCompatActivity() {
         initRecycler()
 
     }
+
     private fun initView() {
-        constrainLayout = findViewById(R.id.constraintLayoutChatsActivity)
+        constraintLayout = findViewById(R.id.constraintLayoutChatsActivity)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
     }
@@ -120,23 +127,23 @@ class ChatsActivity : AppCompatActivity() {
             this@ChatsActivity,
             onClickListener
         )
-        val layoutManager: LinearLayoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapterChats
     }
 
-    private fun isConnected(){
+    private fun isConnected() {
         val networkIsConnectedService: NetworkIsConnectedService =
             ViewModelProvider(this)[NetworkIsConnectedService::class.java]
         networkIsConnectedService.isConnected(
             networkIsConnectedService,
             this,
-            constrainLayout
+            constraintLayout
         )
     }
 
-    private fun runStartActivity(usernameToWhom: String){
+    private fun runStartActivity(usernameToWhom: String) {
         val intent: Intent = Intent(
             this@ChatsActivity,
             MessagesSendActivity::class.java
