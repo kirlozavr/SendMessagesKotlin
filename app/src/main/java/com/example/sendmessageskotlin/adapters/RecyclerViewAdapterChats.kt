@@ -21,7 +21,7 @@ class RecyclerViewAdapterChats(
 
     init {
         this.onClickListener = onClickListener
-        this.inflater = inflater
+        this.inflater = LayoutInflater.from(context)
     }
 
     fun setList(chatsList: MutableList<ChatsDto>){
