@@ -3,7 +3,9 @@ package com.example.sendmessageskotlin.model
 import com.example.sendmessageskotlin.common.CallBackHandler
 import com.example.sendmessageskotlin.common.DataBase
 import com.example.sendmessageskotlin.entity.UserEntity
-import com.example.sendmessageskotlin.presenter.RegistrationPresenter
+import com.example.sendmessageskotlin.exception.ErrorRequestException
+import com.example.sendmessageskotlin.exception.UserNotFoundException
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -21,9 +23,16 @@ class RegistrationModel {
             .document(userName)
             .get()
             .addOnSuccessListener { document ->
+                if(!document.exists()){
+                    throw UserNotFoundException("Пользователь не найден.")
+                }
                 val userEntity = document.toObject<UserEntity>()
                 callBack.execute(userEntity ?: UserEntity())
-            }
+            }.addOnFailureListener(
+                OnFailureListener { exception ->
+                    throw ErrorRequestException(exception.message.toString())
+                }
+            )
     }
 
     fun postEntity(userEntity: UserEntity) {
