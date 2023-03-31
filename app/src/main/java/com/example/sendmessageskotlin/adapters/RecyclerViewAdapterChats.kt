@@ -40,7 +40,7 @@ class RecyclerViewAdapterChats(
     ): RecyclerViewHolder {
         var view: View = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.item_chat, parent, false)
+            .inflate(R.layout.item_chat_card, parent, false)
         return RecyclerViewHolder(view)
     }
 
