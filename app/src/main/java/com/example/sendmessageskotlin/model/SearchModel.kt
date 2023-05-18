@@ -1,6 +1,7 @@
 ﻿package com.example.sendmessageskotlin.model
 
 import com.example.sendmessageskotlin.common.CallBackHandler
+import com.example.sendmessageskotlin.contract.SearchContract
 import com.example.sendmessageskotlin.dto.SearchDto
 import com.example.sendmessageskotlin.entity.UserEntity
 import com.example.sendmessageskotlin.exception.ErrorRequestException
@@ -11,12 +12,12 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.firestore.ktx.toObject
 
-class SearchModel {
+class SearchModel : SearchContract.Model{
 
     private val repository = SearchRepository()
     private val mapper = SearchMapper()
 
-    fun getUsersByName(
+    override fun getUsersByName(
         username: String,
         callBackHandler: CallBackHandler<List<SearchDto>>
     ) {

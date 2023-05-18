@@ -3,6 +3,7 @@ package com.example.sendmessageskotlin.presenter
 import com.example.sendmessageskotlin.adapters.RecyclerViewCallBack
 import com.example.sendmessageskotlin.common.CallBackHandler
 import com.example.sendmessageskotlin.common.DateFormat
+import com.example.sendmessageskotlin.contract.ChatsContract
 import com.example.sendmessageskotlin.dto.ChatsDto
 import com.example.sendmessageskotlin.entity.ChatsEntity
 import com.example.sendmessageskotlin.mapping.ChatsMapper
@@ -11,12 +12,18 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.streams.toList
 
-class ChatsPresenter {
+class ChatsPresenter : ChatsContract.Presenter{
 
     private val mapper = ChatsMapper()
-    private val model = ChatsModel()
+    private val contractView: ChatsContract.View
+    private val contractModel: ChatsContract.Model
 
-    fun showChats(
+    constructor(contractView: ChatsContract.View){
+        contractModel = ChatsModel()
+        this.contractView = contractView
+    }
+
+    override fun showChats(
         usernameFrom: String,
         recyclerViewCallBack: RecyclerViewCallBack<List<ChatsDto>>
     ) {
@@ -25,7 +32,7 @@ class ChatsPresenter {
                 recyclerViewCallBack.get(mappingChats(value))
             }
         }
-        model.getAllChats(getChatsCallBack, usernameFrom)
+        contractModel.getAllChats(getChatsCallBack, usernameFrom)
     }
 
     private fun mappingChats(value: List<ChatsEntity>): List<ChatsDto> {

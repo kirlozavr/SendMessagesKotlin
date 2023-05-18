@@ -9,14 +9,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.example.sendmessageskotlin.R
 import com.example.sendmessageskotlin.common.StartActivityCallBack
+import com.example.sendmessageskotlin.contract.RegistrationContract
 import com.example.sendmessageskotlin.entity.UserEntity
 import com.example.sendmessageskotlin.presenter.RegistrationPresenter
 import com.example.sendmessageskotlin.service.NetworkIsConnectedService
 import kotlin.math.roundToInt
 
-class RegistrationActivity : AppCompatActivity() {
+class RegistrationActivity : AppCompatActivity(), RegistrationContract.View{
 
-    private lateinit var registrationPresenter: RegistrationPresenter
+    private lateinit var contractPresenter: RegistrationContract.Presenter
     private var registrationBoolean: Boolean = false
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var textViewRegistration: TextView
@@ -44,8 +45,9 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
 
-        registrationPresenter = RegistrationPresenter(
+        contractPresenter = RegistrationPresenter(
             this@RegistrationActivity,
+            this,
             startActivityCallBack
         )
     }
@@ -106,7 +108,7 @@ class RegistrationActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         } else {
-            registrationPresenter
+            contractPresenter
                 .setIsRegistration(registrationBoolean)
                 .setUserEntity(
                     createUserEntity(
@@ -119,7 +121,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun onCheckBox(){
-        registrationPresenter.setIsSaveUser(checkBox.isChecked)
+        contractPresenter.setIsSaveUser(checkBox.isChecked)
     }
 
     private fun onClickTextRegistration() {

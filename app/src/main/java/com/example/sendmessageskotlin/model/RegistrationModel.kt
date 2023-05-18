@@ -1,6 +1,7 @@
 package com.example.sendmessageskotlin.model
 
 import com.example.sendmessageskotlin.common.CallBackHandler
+import com.example.sendmessageskotlin.contract.RegistrationContract
 import com.example.sendmessageskotlin.entity.UserEntity
 import com.example.sendmessageskotlin.exception.ErrorRequestException
 import com.example.sendmessageskotlin.exception.UserNotFoundException
@@ -8,11 +9,11 @@ import com.example.sendmessageskotlin.repository.RegistrationRepository
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.firestore.ktx.toObject
 
-class RegistrationModel {
+class RegistrationModel : RegistrationContract.Model{
 
     private val repository = RegistrationRepository()
 
-    fun getEntityByName(
+    override fun getEntityByName(
         callBack: CallBackHandler<UserEntity>,
         username: String
     ) {
@@ -30,7 +31,7 @@ class RegistrationModel {
             )
     }
 
-    fun postEntity(userEntity: UserEntity) {
+    override fun postEntity(userEntity: UserEntity) {
         repository
             .postEntity(userEntity)
     }

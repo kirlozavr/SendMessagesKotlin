@@ -15,7 +15,7 @@ class RecyclerViewAdapterChats(
     onClickListener: OnClickListener<ChatsDto>
 ): RecyclerView.Adapter<RecyclerViewAdapterChats.RecyclerViewHolder>() {
 
-    private lateinit var inflater: LayoutInflater
+    private var inflater: LayoutInflater
     private var onClickListener: OnClickListener<ChatsDto>
     private var chatsList: MutableList<ChatsDto> = ArrayList<ChatsDto>()
 
@@ -38,7 +38,7 @@ class RecyclerViewAdapterChats(
         parent: ViewGroup,
         viewType: Int
     ): RecyclerViewHolder {
-        var view: View = LayoutInflater
+        val view: View = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.item_chat_card, parent, false)
         return RecyclerViewHolder(view)

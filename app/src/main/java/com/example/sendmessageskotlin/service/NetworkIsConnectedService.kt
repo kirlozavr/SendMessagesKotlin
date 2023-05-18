@@ -90,8 +90,7 @@ class NetworkIsConnectedService : AndroidViewModel {
                     R.color.color_snackbar_not_connected,
                     null
                 )
-            )
-            .show()
+            ).show()
     }
 }
 

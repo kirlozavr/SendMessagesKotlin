@@ -5,18 +5,24 @@ import android.widget.Toast
 import com.example.sendmessageskotlin.common.CallBackHandler
 import com.example.sendmessageskotlin.common.Data
 import com.example.sendmessageskotlin.common.StartActivityCallBack
+import com.example.sendmessageskotlin.contract.RegistrationContract
 import com.example.sendmessageskotlin.entity.UserEntity
 import com.example.sendmessageskotlin.model.RegistrationModel
 
 class RegistrationPresenter
-constructor(context: Context, startActivityCallBack: StartActivityCallBack) {
+constructor(
+    context: Context,
+    contractView: RegistrationContract.View,
+    startActivityCallBack: StartActivityCallBack
+) : RegistrationContract.Presenter {
 
     private val context: Context
     private var isRegistration: Boolean = false
     private var isSaveUser: Boolean = false
     private lateinit var userEntity: UserEntity
+    private val contractModel: RegistrationContract.Model
+    private val contractView: RegistrationContract.View
     private val startActivityCallBack: StartActivityCallBack
-    private val registrationModel: RegistrationModel = RegistrationModel()
     private val getEntityCallBack = object : CallBackHandler<UserEntity> {
         override fun execute(value: UserEntity) {
             authorization(value)
@@ -25,28 +31,30 @@ constructor(context: Context, startActivityCallBack: StartActivityCallBack) {
 
     init {
         this.context = context
+        this.contractView = contractView
         this.startActivityCallBack = startActivityCallBack
+        this.contractModel = RegistrationModel()
     }
 
-    fun setIsRegistration(isRegistration: Boolean):
+    override fun setIsRegistration(isRegistration: Boolean):
             RegistrationPresenter {
         this.isRegistration = isRegistration
         return this
     }
 
-    fun setIsSaveUser(isSaveUser: Boolean):
+    override fun setIsSaveUser(isSaveUser: Boolean):
             RegistrationPresenter {
         this.isSaveUser = isSaveUser
         return this
     }
 
-    fun setUserEntity(userEntity: UserEntity):
+    override fun setUserEntity(userEntity: UserEntity):
             RegistrationPresenter {
         this.userEntity = userEntity
         return this
     }
 
-    fun signIn() {
+    override fun signIn() {
         getEntityByName(
             getEntityCallBack,
             userEntity.getUsername()
@@ -57,7 +65,7 @@ constructor(context: Context, startActivityCallBack: StartActivityCallBack) {
         callBack: CallBackHandler<UserEntity>,
         userName: String
     ) {
-        registrationModel
+        contractModel
             .getEntityByName(callBack, userName)
     }
 
@@ -126,6 +134,6 @@ constructor(context: Context, startActivityCallBack: StartActivityCallBack) {
     }
 
     private fun registrationUser() {
-        registrationModel.postEntity(userEntity)
+        contractModel.postEntity(userEntity)
     }
 }

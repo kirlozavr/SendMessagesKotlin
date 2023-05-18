@@ -15,11 +15,12 @@ import com.example.sendmessageskotlin.adapters.RecyclerViewAdapterChats
 import com.example.sendmessageskotlin.adapters.RecyclerViewCallBack
 import com.example.sendmessageskotlin.common.Data
 import com.example.sendmessageskotlin.common.OnClickListener
+import com.example.sendmessageskotlin.contract.ChatsContract
 import com.example.sendmessageskotlin.dto.ChatsDto
 import com.example.sendmessageskotlin.presenter.ChatsPresenter
 import com.example.sendmessageskotlin.service.NetworkIsConnectedService
 
-class ChatsActivity : AppCompatActivity() {
+class ChatsActivity : AppCompatActivity(), ChatsContract.View {
 
     private val USERNAME_FROM = "usernameFromChats"
 
@@ -28,7 +29,7 @@ class ChatsActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterChats: RecyclerViewAdapterChats
     private lateinit var usernameFrom: String
-    private val chatsPresenter = ChatsPresenter()
+    private lateinit var contractPresenter: ChatsContract.Presenter
     private val getChatsCallBack = object : RecyclerViewCallBack<List<ChatsDto>> {
         override fun get(value: List<ChatsDto>) {
             adapterChats.deleteList()
@@ -41,7 +42,7 @@ class ChatsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chats)
         init()
         isConnected()
-        chatsPresenter.showChats(usernameFrom, getChatsCallBack)
+        contractPresenter.showChats(usernameFrom, getChatsCallBack)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -94,6 +95,8 @@ class ChatsActivity : AppCompatActivity() {
     private fun init() {
 
         initView()
+
+        contractPresenter = ChatsPresenter(this)
 
         usernameFrom = Data.getStringPreferences(this, Data.USERNAME)
 

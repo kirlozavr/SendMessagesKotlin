@@ -1,6 +1,7 @@
 package com.example.sendmessageskotlin.model
 
 import com.example.sendmessageskotlin.common.CallBackHandler
+import com.example.sendmessageskotlin.contract.ChatsContract
 import com.example.sendmessageskotlin.entity.ChatsEntity
 import com.example.sendmessageskotlin.exception.ChatsNotFoundException
 import com.example.sendmessageskotlin.exception.ErrorRequestException
@@ -8,11 +9,11 @@ import com.example.sendmessageskotlin.repository.ChatsRepository
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.firestore.ktx.toObject
 
-class ChatsModel {
+class ChatsModel : ChatsContract.Model{
 
     private val repository = ChatsRepository()
 
-    fun getAllChats(
+    override fun getAllChats(
         callBackHandler: CallBackHandler<List<ChatsEntity>>,
         usernameFrom: String
     ) {
